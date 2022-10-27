@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
+
+    <title>Covid-19 TRACKER</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://kit.fontawesome.com/3e9300b15c.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- mx-auto untuk ketengah div kita -->
+    <!-- untuk buat border pake border border-success -->
+    <div class="container-width pt-2 mx-auto mb-5">
+        <div class="fs-3 fw-bold mb-5 mt-3">
+            COVID-19 TRACKER
+        </div>
+        <form>
+            <div class="mb-4">
+                <input id="input-negara" name="negara" class="input-width text-center rounded-pill border-0 py-2" type="text">
+                <button id="btn-change" type="button" class="btn btn-outline-success text-white border-0 rounded-pill px-4 py-2 ms-3 bg-button">GET DATA</button>
+            </div>
+        </form>
+        
+        <div class="card-group mb-3 mx-5">
+            <div class="card me-4 bg-1 rounded">
+               
+              <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-gauge fa-2xl"></i></h5>
+                <p class="card-text fs-5 fw-bold text-white">Active Cases</p>
+                <p id="active-cases" class="card-text fs-2 fw-bold text-white">-</p>
+              </div>
+            </div>
+            <div class="card me-4 bg-2 rounded">
+               
+              <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-house-chimney-medical fa-2xl"></i></h5>
+                <p class="card-text fs-5 fw-bold">New Cases</p>
+                <p id="new-cases" class="card-text fs-2 fw-bold">-</p>
+              </div>
+            </div>
+            <div class="card bg-3 rounded">
+               
+              <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-square-check fa-2xl"></i></h5>
+                <p class="card-text fs-5 fw-bold">Recovered Cases</p>
+                <p id="recovered-cases" class="card-text fs-2 fw-bold">-</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-group mx-5">
+            <div class="card  me-4 bg-4 rounded">
+               
+              <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-bars fa-2xl"></i></h5>
+                <p class="card-text fs-5 fw-bold">Total Cases</p>
+                <p id="total-cases" class="card-text fs-2 fw-bold">-</p>
+              </div>
+            </div>
+            <div class="card me-4 bg-5 rounded">
+               
+              <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-skull-crossbones fa-2xl"></i></h5>
+                <p class="card-text fs-5 fw-bold">Total Deaths</p>
+                <p id="total-deaths" class="card-text fs-2 fw-bold">-</p>
+              </div>
+            </div>
+            <div class="card bg-6 rounded">
+               
+              <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-vial-virus fa-2xl"></i></h5>
+                <p class="card-text  fs-5 fw-bold">Total Tests</p>
+                <p id="total-tests" class="card-text fs-2 fw-bold">-</p>
+              </div>
+            </div>
+          </div>
+    </div>
+    
+    <script>
+        const options = {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': '3acaf007c6mshe3b6545e9dcb36bp108ef2jsn35550d5942ec',
+                'X-RapidAPI-Host': 'covid-193.p.rapidapi.com'
+            }
+        };
+
+        fetch('https://covid-193.p.rapidapi.com/history?country=usa', options)
+            .then(response => {
+                console.log(response, '');
+                return response.json()
+            })
+            .then(response => {
+                document.getElementById('active-cases').innerHTML = response.response[0].cases.active
+                document.getElementById('new-cases').innerHTML = response.response[0].cases.new
+                document.getElementById('recovered-cases').innerHTML = response.response[0].cases.recovered
+                document.getElementById('total-cases').innerHTML = response.response[0].cases.total
+                document.getElementById('total-deaths').innerHTML = response.response[0].deaths.total
+                document.getElementById('total-tests').innerHTML = response.response[0].tests.total
+            })
+	        .catch(err => console.error(err))
+
+            var buttonChange = document.getElementById('btn-change')
+
+            buttonChange.addEventListener('click', function(event) {
+                event.preventDefault()
+                let inputNegara = document.getElementById('input-negara')
+                let namaNegara = inputNegara.value
+                fetch(`https://covid-193.p.rapidapi.com/history?country=${namaNegara}`, options)
+                    .then(response => {
+                        // ini wajib ada pada fetch supaya data yg diparsing dari server bisa didapatkan
+                        return response.json()
+                    })
+                    .then(response => {
+                        console.log(response);
+                        console.log(response.response[0].cases.active);
+                        console.log(namaNegara);
+                        document.getElementById('active-cases').innerHTML = response.response[0].cases.active
+                        document.getElementById('new-cases').innerHTML = response.response[0].cases.new
+                        document.getElementById('recovered-cases').innerHTML = response.response[0].cases.recovered
+                        document.getElementById('total-cases').innerHTML = response.response[0].cases.total
+                        document.getElementById('total-deaths').innerHTML = response.response[0].deaths.total
+                        document.getElementById('total-tests').innerHTML = response.response[0].tests.total
+                    })
+                    .catch(err => console.error(err))
+                })
+
+    </script>
+
+</body>
+</html>
